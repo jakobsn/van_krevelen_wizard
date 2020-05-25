@@ -1,0 +1,14 @@
+#navbar{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 3em;
+    margin-bottom: 1em;
+}
+
+#navbar > div{
+    background-color: rgb(91, 170, 91);
+    border: 1px solid black;
+    flex-grow: 1;
+
+}
