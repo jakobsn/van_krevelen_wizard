@@ -7,9 +7,15 @@
          
         <!-- Bootstrap Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script>let $ = require('jquery');</script>
+        <script>
+            let jQuery = require('jquery');
+            let $ = jQuery
+        </script>
+        <script>require('jqueryui');</script>
         <script>require('popper.js');</script>
         <script>require('bootstrap');</script>     
+        <script>const ExcelJS = require('exceljs');</script>
+
 
         <script type="text/javascript" src="mainWindow.js"></script>
         <link href="mainWindow.css" rel="stylesheet" type="text/css">

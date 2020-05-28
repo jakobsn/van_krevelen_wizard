@@ -2,6 +2,7 @@ const electron = require("electron")
 const url = require("url")
 const path = require("path")
 
+
 const {app, BrowserWindow, Menu, ipcMain} = electron;
 
 //process.env.NODE_ENV = "production";
@@ -10,6 +11,7 @@ let mainWindow;
 
 app.on('ready', function(){
     mainWindow = new BrowserWindow({
+        show: false, 
         icon:  
             process.platform == 'win32' ? path.join(__dirname, '/assets/icons/win/icon.ico') :
             process.platform == 'darwin' ? path.join(__dirname, '/assets/icons/mac/icon.icns') : 
@@ -30,6 +32,8 @@ app.on('ready', function(){
 
     const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
     Menu.setApplicationMenu(mainMenu)
+    mainWindow.maximize()
+    mainWindow.show()
 })
 
 const mainMenuTemplate = [
