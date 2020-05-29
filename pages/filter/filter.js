@@ -2,6 +2,10 @@ var workbook = new ExcelJS.Workbook();
 
 let table
 
+$("#filter").on("click", function(){
+
+})
+
 $("#dragable").on("dragover", function(event) {
     event.preventDefault();  
     event.stopPropagation();
@@ -36,16 +40,18 @@ function generateTable(document){
     }
 
     table = $('#preview-table').DataTable({
-        dom: 'Bfrtip',
         buttons: [
             {
+                text: 'Export',
                 extend: 'excel',
                 filename: 'Filtered_progenesis',
                 title: ''
-            },
+            }
         ],
         "columns": header_list.slice(1),
-        "paging": false
+        "paging": false,
+        dom: 'Bfrtip',
+
     })
 
     document.worksheets[0].eachRow({ includeEmpty: true }, function(row, rowNumber){
