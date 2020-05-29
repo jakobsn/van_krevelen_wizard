@@ -1,8 +1,6 @@
 var workbook = new ExcelJS.Workbook();
 
-$("#filter-button").on("click", function() {
-    
-})
+let table
 
 $("#dragable").on("dragover", function(event) {
     event.preventDefault();  
@@ -37,15 +35,24 @@ function generateTable(document){
         header_list.push({"title": header[i]})
     }
 
-    let table = $('#preview-table').DataTable({
-        "columns": header_list.slice(1)
+    table = $('#preview-table').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'excel',
+                filename: 'Filtered_progenesis',
+                title: ''
+            },
+        ],
+        "columns": header_list.slice(1),
+        "paging": false
     })
 
     document.worksheets[0].eachRow({ includeEmpty: true }, function(row, rowNumber){
         if(rowNumber > 1){
             real_row = []
             row.eachCell({includeEmpty: true}, function(cell, colNumber){
-                real_row.push(cell.value == null ? "null" : cell.value)
+                real_row.push(cell.value == null ? "" : cell.value)
             })
             table.row.add(
                 real_row
