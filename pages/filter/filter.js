@@ -50,7 +50,12 @@ function generateTable(document){
         ],
         "columns": header_list.slice(1),
         "paging": false,
-        dom: 'Bfrtip',
+        select: true,
+        searchPanes:{
+            cascadePanes: true,
+            viewTotal: true,
+        },
+        dom: 'BPfrtip'
 
     })
 

@@ -1,7 +1,6 @@
 <html>
     <head>
         <title>Van Krevelen Wizard</title>
-
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css" />
          
@@ -10,20 +9,21 @@
         <script>
             let jQuery = require('jquery');
             let $ = jQuery
+            require('bootstrap');
+            require('popper.js');
+            require('jqueryui');
             window.JSZip = require( "jszip" );
             require( 'datatables.net-buttons-dt' )();
             var dt = require( 'datatables.net' )();
             require( 'datatables.net-buttons-dt' )();
             require( 'datatables.net-buttons/js/buttons.html5.js' )();
             require( 'datatables.net-searchpanes-dt' )();
-        </script>
-        <script>require('jqueryui');</script>
-        <script>require('popper.js');</script>
-        <script>require('bootstrap');</script>     
-        <script>const ExcelJS = require('exceljs');</script>
 
+        </script>
+        <script>const ExcelJS = require('exceljs');</script>
         <script type="text/javascript" src="mainWindow.js"></script>
         <link href="mainWindow.css" rel="stylesheet" type="text/css">
+        <script type="text/javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
     </head>
     <body>
         <div id="navbar">
