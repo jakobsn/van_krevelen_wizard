@@ -1,0 +1,7 @@
+#filter-button{
+    background-color: green;
+}
+
+#dragable { 
+    width: 300px; height: 300px; background: red; 
+}
