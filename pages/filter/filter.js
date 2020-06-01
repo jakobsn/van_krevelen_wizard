@@ -6,12 +6,12 @@ $("#filter-button").on("click", function(event){
     const maximum = $(".maximum").val()
     console.log(atom, minimum, maximum)
     console.log(global.sharedObj.table)
+    let remove_rows = []
     global.sharedObj.table.rows().every(function (rowIdx, tableLoop, rowLoop){
         //console.log(value)
         //console.log(value[1])
         //console.log(this.data())
         const arr = this.data()[4].match(/[A-Z][a-z]*[0-9]?[0-9]?[0-9]?/g)
-        console.log(arr)
         const mappedArray = arr.map(a => /\d/g.test(a) ? a : a+1)
         console.log(mappedArray)
         for(let i = 0; i < mappedArray.length; i++){
@@ -19,10 +19,19 @@ $("#filter-button").on("click", function(event){
                 if(mappedArray[i].charAt(mappedArray[i].indexOf(atom)+1).match(/^[0-9]+$/) != null){
 
                     console.log("Found atoms:", mappedArray[i])
+                    const count = parseInt(mappedArray[i].replace(atom, ""))
+                    if(count < minimum || count > maximum){
+                        remove_rows.push(rowIdx)
+                        console.log("remove")
+                    }
                 }
             }
         }
     })
+    for(let j = remove_rows.length -1; j > -1; j--){
+        global.sharedObj.table.row(remove_rows[j]).remove()
+    }
+    global.sharedObj.table.draw()
 })
 
 $("#dragable").on("dragover", function(event) {
