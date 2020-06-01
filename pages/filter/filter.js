@@ -1,6 +1,29 @@
 var workbook = new ExcelJS.Workbook();
 
-let table
+$("#filter-button").on("click", function(event){
+    const atom = $(".atom").val()
+    const minimum = $(".minimum").val()
+    const maximum = $(".maximum").val()
+    console.log(atom, minimum, maximum)
+    console.log(global.sharedObj.table)
+    global.sharedObj.table.rows().every(function (rowIdx, tableLoop, rowLoop){
+        //console.log(value)
+        //console.log(value[1])
+        //console.log(this.data())
+        const arr = this.data()[4].match(/[A-Z][a-z]*[0-9]?[0-9]?[0-9]?/g)
+        console.log(arr)
+        const mappedArray = arr.map(a => /\d/g.test(a) ? a : a+1)
+        console.log(mappedArray)
+        for(let i = 0; i < mappedArray.length; i++){
+            if(mappedArray[i].includes(atom)){
+                if(mappedArray[i].charAt(mappedArray[i].indexOf(atom)+1).match(/^[0-9]+$/) != null){
+
+                    console.log("Found atoms:", mappedArray[i])
+                }
+            }
+        }
+    })
+})
 
 $("#dragable").on("dragover", function(event) {
     event.preventDefault();  
@@ -32,13 +55,14 @@ function generateTable(document){
     let header_list = []
     let header = document.worksheets[0].getRow(1).values
     for(let i = 0; i < header.length; i++){
-        header_list.push({"title": header[i]})
+        header_list.push({"title": header[i], "className": header[i]})
     }
 
-    table = $('#preview-table').DataTable({
+    let table = $('#preview-table').DataTable({
         dom: 'Bfrtip',
         buttons: [
             {
+                text: 'export',
                 extend: 'excel',
                 filename: 'Filtered_progenesis',
                 title: ''
@@ -61,5 +85,5 @@ function generateTable(document){
 
     })
     table.draw()
-
+    global.sharedObj = {table: table};
 }
