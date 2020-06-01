@@ -1,30 +1,27 @@
 var workbook = new ExcelJS.Workbook();
 
 $("#filter-button").on("click", function(event){
-    const atom = $(".atom").val()
-    const minimum = $(".minimum").val()
-    const maximum = $(".maximum").val()
-    console.log(atom, minimum, maximum)
-    console.log(global.sharedObj.table)
     let remove_rows = []
+
+    atom_min_map = {}
+    atom_max_map = {}
+    $(".include-atoms").each(function(index, object){
+        atom_min_map[$(object).children(".atom").text()] = $(object).children(".minimum").val()
+        atom_max_map[$(object).children(".atom").text()] = $(object).children(".maximum").val()
+    })
     global.sharedObj.table.rows().every(function (rowIdx, tableLoop, rowLoop){
         //console.log(value)
         //console.log(value[1])
         //console.log(this.data())
-        const arr = this.data()[4].match(/[A-Z][a-z]*[0-9]?[0-9]?[0-9]?/g)
+        const arr = this.data()[4].split("[").join("").split("]").join("").match(/[A-Z][a-z]*[0-9]?[0-9]?[0-9]?/g)
         const mappedArray = arr.map(a => /\d/g.test(a) ? a : a+1)
-        console.log(mappedArray)
         for(let i = 0; i < mappedArray.length; i++){
-            if(mappedArray[i].includes(atom)){
-                if(mappedArray[i].charAt(mappedArray[i].indexOf(atom)+1).match(/^[0-9]+$/) != null){
 
-                    console.log("Found atoms:", mappedArray[i])
-                    const count = parseInt(mappedArray[i].replace(atom, ""))
-                    if(count < minimum || count > maximum){
-                        remove_rows.push(rowIdx)
-                        console.log("remove")
-                    }
-                }
+            const atom = mappedArray[i].match(/[A-Z][a-z]*/g)[0]
+            const count = mappedArray[i].match(/[0-9][0-9]?[0-9]?/g)[0]
+
+            if(atom_min_map[atom] > parseInt(count) || atom_max_map[atom] < parseInt(count)){
+                remove_rows.push(rowIdx)
             }
         }
     })
@@ -81,7 +78,7 @@ function generateTable(document){
         "paging": false
     })
 
-    let atoms = {}
+    let atoms = []
     document.worksheets[0].eachRow({ includeEmpty: true }, function(row, rowNumber){
         if(rowNumber > 1){
             real_row = []
@@ -91,11 +88,27 @@ function generateTable(document){
             table.row.add(
                 real_row
             )
-            atoms[real_row[4].match(/[A-Z][a-z]*/g)] = 1
+            // Find all atoms
+            row_atoms = real_row[4].match(/[A-Z][a-z]*/g)
+            row_atoms.forEach(function(atom){
+                if(!atoms.includes(atom)){
+                    atoms.push(atom)
+                }
+            })   
         }
 
     })
     table.draw()
     global.sharedObj = {table: table};
     console.log(atoms)
+    atoms.forEach(function(atom){
+        $("#filter-options").append(
+            "<div class='include-atoms'>" +
+                "Atom: <span class='atom'>" + atom + "</span>, " +
+                "Minimum: <input type='text' name='minimum' class='minimum' value='0'>" +
+                "Maximum: <input type='text' name='maximum' class='maximum' value='999'>" +
+            "</div>"
+        ) 
+    })
+
 }
