@@ -81,6 +81,7 @@ function generateTable(document){
         "paging": false
     })
 
+    let atoms = {}
     document.worksheets[0].eachRow({ includeEmpty: true }, function(row, rowNumber){
         if(rowNumber > 1){
             real_row = []
@@ -90,9 +91,11 @@ function generateTable(document){
             table.row.add(
                 real_row
             )
+            atoms[real_row[4].match(/[A-Z][a-z]*/g)] = 1
         }
 
     })
     table.draw()
     global.sharedObj = {table: table};
+    console.log(atoms)
 }
