@@ -3,6 +3,8 @@ var workbook = new ExcelJS.Workbook();
 $("#filter-button").on("click", function(event){
     let remove_rows = []
 
+    mass_err_min = $("#mass-err-min").val()
+    mass_err_max = $("#mass-err-max").val()
     atom_min_map = {}
     atom_max_map = {}
     $(".include-atoms").each(function(index, object){
@@ -10,9 +12,7 @@ $("#filter-button").on("click", function(event){
         atom_max_map[$(object).children(".atom").text()] = $(object).children(".maximum").val()
     })
     global.sharedObj.table.rows().every(function (rowIdx, tableLoop, rowLoop){
-        //console.log(value)
-        //console.log(value[1])
-        //console.log(this.data())
+
         const arr = this.data()[4].split("[").join("").split("]").join("").match(/[A-Z][a-z]*[0-9]?[0-9]?[0-9]?/g)
         const mappedArray = arr.map(a => /\d/g.test(a) ? a : a+1)
         for(let i = 0; i < mappedArray.length; i++){
@@ -20,8 +20,10 @@ $("#filter-button").on("click", function(event){
             const atom = mappedArray[i].match(/[A-Z][a-z]*/g)[0]
             const count = mappedArray[i].match(/[0-9][0-9]?[0-9]?/g)[0]
 
-            if(atom_min_map[atom] > parseInt(count) || atom_max_map[atom] < parseInt(count)){
+            if(atom_min_map[atom] > parseInt(count) || atom_max_map[atom] < parseInt(count) || parseFloat(this.data()[7]) > mass_err_max || parseFloat(this.data()[7]) < mass_err_min){
+                console.log(this.data()[7])
                 remove_rows.push(rowIdx)
+                break
             }
         }
     })
