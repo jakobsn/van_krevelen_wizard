@@ -3,7 +3,7 @@ const url = require("url")
 const path = require("path")
 
 
-const {app, BrowserWindow, Menu, ipcMain} = electron;
+const {app, BrowserWindow, Menu, ipcMain, ipcRenderer} = electron;
 
 //process.env.NODE_ENV = "production";
 
@@ -34,6 +34,11 @@ app.on('ready', function(){
     Menu.setApplicationMenu(mainMenu)
     mainWindow.maximize()
     mainWindow.show()
+})
+
+ipcMain.on('table:add', function(event, table){
+    console.log(table)
+    mainWindow.webContents.send('table:add', table)
 })
 
 const mainMenuTemplate = [

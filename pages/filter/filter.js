@@ -1,17 +1,24 @@
+
 var workbook = new ExcelJS.Workbook();
+
+
+$("#diagram-button").on("click", function(event){
+    $("#diagram").click()
+})
 
 $("#filter-button").on("click", function(event){
     let remove_rows = []
 
-    mass_err_min = $("#mass-err-min").val()
-    mass_err_max = $("#mass-err-max").val()
-    atom_min_map = {}
-    atom_max_map = {}
+    const mass_err_min = $("#mass-err-min").val()
+    const mass_err_max = $("#mass-err-max").val()
+    let atom_min_map = {}
+    let atom_max_map = {}
+    const minimum_score = $("#minimum-score").val()
     $(".include-atoms").each(function(index, object){
         atom_min_map[$(object).children(".atom").text()] = $(object).children(".minimum").val()
         atom_max_map[$(object).children(".atom").text()] = $(object).children(".maximum").val()
     })
-    global.sharedObj.table.rows().every(function (rowIdx, tableLoop, rowLoop){
+    global.props.table.rows().every(function (rowIdx, tableLoop, rowLoop){
 
         const arr = this.data()[4].split("[").join("").split("]").join("").match(/[A-Z][a-z]*[0-9]?[0-9]?[0-9]?/g)
         const mappedArray = arr.map(a => /\d/g.test(a) ? a : a+1)
@@ -20,17 +27,21 @@ $("#filter-button").on("click", function(event){
             const atom = mappedArray[i].match(/[A-Z][a-z]*/g)[0]
             const count = mappedArray[i].match(/[0-9][0-9]?[0-9]?/g)[0]
 
-            if(atom_min_map[atom] > parseInt(count) || atom_max_map[atom] < parseInt(count) || parseFloat(this.data()[7]) > mass_err_max || parseFloat(this.data()[7]) < mass_err_min){
-                console.log(this.data()[7])
+            if(atom_min_map[atom] > parseInt(count) || 
+                atom_max_map[atom] < parseInt(count) || 
+                parseFloat(this.data()[7]) > mass_err_max || 
+                parseFloat(this.data()[7]) < mass_err_min ||
+                parseFloat(this.data()[5]) < minimum_score){
+                //console.log(this.data()[7])
                 remove_rows.push(rowIdx)
                 break
             }
         }
     })
     for(let j = remove_rows.length -1; j > -1; j--){
-        global.sharedObj.table.row(remove_rows[j]).remove()
+        global.props.table.row(remove_rows[j]).remove()
     }
-    global.sharedObj.table.draw()
+    global.props.table.draw()
 })
 
 $("#dragable").on("dragover", function(event) {
@@ -143,7 +154,7 @@ function generateTable(document){
 
     })
     table.draw()
-    global.sharedObj = {table: table};
+    global.props = {table: table};
     console.log(atoms)
     atoms.forEach(function(atom){
         $("#filter-options").append(

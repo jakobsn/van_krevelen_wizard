@@ -1,14 +1,10 @@
-#filter-button{
-    background-color: rgb(91, 170, 91);
-    border-radius: 0.5em;
-    width: 5em;
-}
+
 #preview{
     width: 100%;
-    overflow: scroll;
+    /*overflow: scroll;*/
 }
 
-#filter-button:hover{
+.buttons > button:hover{
     background-color: lightgreen;
 }
 
@@ -29,4 +25,9 @@
 }
 #dragable * {
     padding-top: 2em;
+}
+.buttons > button{
+    background-color: rgb(91, 170, 91);
+    border-radius: 0.5em;
+    width: 10em;
 }
