@@ -57,13 +57,19 @@ $("#dragable").on("drop", function(event) {
         break // Support for several documents not implemented
     }
 }); 
-
 function validate(cell_value){
     if(cell_value == null){
         return true
     }
+    else if(String(cell_value).charAt(0) == "=" || 
+            String(cell_value).charAt(0) == "+" || 
+            String(cell_value).charAt(0) == "-" ||
+            String(cell_value).charAt(0) == "@") {
+        return "Invalid chatacter: " + cell_value.charAt(0)
+    }
     return true
 }
+
 
 // TODO: This is vulnerable to injection
 function generateTable(document){
