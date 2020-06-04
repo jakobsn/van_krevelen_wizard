@@ -102,7 +102,8 @@ function generateTable(document){
                     real_row.push(cell.value == null ? "" : (""+cell.value+""))
                 }
                 else{
-                    $("#draggable").append("<p>Invalid input in column: " + colNumber + " row: " + rowNumber)
+                    $("#draggable").append("<p>Invalid input in column: " + colNumber + " row: " + rowNumber + 
+                    " message: " + message + "</p>")
                     return
                 }
             })
