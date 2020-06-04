@@ -10,5 +10,20 @@
     background-color: rgb(91, 170, 91);
     border: 1px solid black;
     flex-grow: 1;
+    border-radius: 1em;
 
+}
+
+#navbar > div > p{
+    margin-top: 0.5em;
+    font-size: large;
+    height: 2em;
+    vertical-align: middle;
+    text-align: center;
+}
+
+#navbar > div:hover{background-color: lightgreen;}
+
+#navbar:hover{
+    cursor: pointer;
 }

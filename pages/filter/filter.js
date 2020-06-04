@@ -58,6 +58,13 @@ $("#dragable").on("drop", function(event) {
     }
 }); 
 
+function validate(cell_value){
+    if(cell_value == null){
+        return true
+    }
+    return true
+}
+
 // TODO: This is vulnerable to injection
 function generateTable(document){
     let header_list = []
@@ -85,7 +92,13 @@ function generateTable(document){
         if(rowNumber > 1){
             real_row = []
             row.eachCell({includeEmpty: true}, function(cell, colNumber){
-                real_row.push(cell.value == null ? "" : cell.value)
+                if(validate(cell.value)){
+                    real_row.push(cell.value == null ? "" : (""+cell.value+""))
+                }
+                else{
+                    $("#draggable").append("<p>Invalid input in column: " + colNumber + " row: " + rowNumber)
+                    return
+                }
             })
             table.row.add(
                 real_row
