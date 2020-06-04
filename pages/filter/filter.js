@@ -44,6 +44,10 @@ $("#filter-button").on("click", function(event){
     global.props.table.draw()
 })
 
+$("#filter").on("click", function(){
+
+})
+
 $("#dragable").on("dragover", function(event) {
     event.preventDefault();  
     event.stopPropagation();
@@ -117,10 +121,17 @@ function generateTable(document){
                 extend: 'excel',
                 filename: 'Filtered_progenesis',
                 title: ''
-            },
+            }
         ],
         "columns": header_list.slice(1),
-        "paging": false
+        "paging": false,
+        select: true,
+        searchPanes:{
+            cascadePanes: true,
+            viewTotal: true,
+        },
+        dom: 'BPfrtip'
+
     })
 
     let atoms = []
