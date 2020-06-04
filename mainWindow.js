@@ -1,7 +1,8 @@
 const electron = require('electron')
 const {ipcRenderer} = electron;
 const path = require('path')
-global.props = {table: ""}
+global.props = {table: null}
+global.props = {atoms: null}
 
 window.onload=function(){
     const home = document.querySelector('#home')

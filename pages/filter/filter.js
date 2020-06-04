@@ -154,7 +154,7 @@ function generateTable(document){
 
     })
     table.draw()
-    global.props = {table: table};
+    global.props = {table: table, atoms: atoms};
     console.log(atoms)
     atoms.forEach(function(atom){
         $("#filter-options").append(
