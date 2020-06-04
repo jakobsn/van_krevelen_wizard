@@ -27,3 +27,6 @@
 #filter-box{
     text-align: center;
 }
+#dragable * {
+    padding-top: 2em;
+}

@@ -63,10 +63,21 @@ function validate(cell_value){
     }
     else if(String(cell_value).charAt(0) == "=" || 
             String(cell_value).charAt(0) == "+" || 
-            String(cell_value).charAt(0) == "-" ||
+            //String(cell_value).charAt(0) == "-" ||
             String(cell_value).charAt(0) == "@") {
         return "Invalid chatacter: " + cell_value.charAt(0)
+
     }
+    else if(!String(cell_value).match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g) && String(cell_value).match(/[&]/g)){
+        return "& only allowed in link"
+    }
+    else if(String(cell_value).match(/[<][/]/g) || 
+            String(cell_value).match(/[/][>]/g) || 
+            String(cell_value).match(/["]/g)){
+            //String(cell_value).match(/[']/g))
+        return "Invalid chatacter: \<\/,\/\>,\", or \'" 
+    }
+
     return true
 }
 
@@ -76,7 +87,15 @@ function generateTable(document){
     let header_list = []
     let header = document.worksheets[0].getRow(1).values
     for(let i = 0; i < header.length; i++){
-        header_list.push({"title": header[i], "className": header[i]})
+        const message = validate(header[i])
+        console.log(message)
+        if(message === true){
+            header_list.push({"title": header[i], "className": header[i]})
+        }
+        else{
+            $("#dragable").append("<p>Invalid input in column 1" + " row: " + i + "" + message + "</p>")
+            return false
+        }
     }
 
     let table = $('#preview-table').DataTable({
@@ -98,13 +117,16 @@ function generateTable(document){
         if(rowNumber > 1){
             real_row = []
             row.eachCell({includeEmpty: true}, function(cell, colNumber){
-                if(validate(cell.value)){
+                const message = validate(cell.value)
+                console.log(message, colNumber, rowNumber)
+                console.log(cell.value)
+                if(message === true){
                     real_row.push(cell.value == null ? "" : (""+cell.value+""))
                 }
                 else{
-                    $("#draggable").append("<p>Invalid input in column: " + colNumber + " row: " + rowNumber + 
+                    $("#dragable").append("<p>Invalid input in column: " + colNumber + " row: " + rowNumber + 
                     " message: " + message + "</p>")
-                    return
+                    return false
                 }
             })
             table.row.add(
