@@ -89,10 +89,16 @@ $("#generate-diagram").on("click", function(){
       
       var layout = {
         xaxis: {
-          range: [ 0, 1.5 ]
+            automargin: true,
+            title: {
+                text: "O / C"
+            }
         },
         yaxis: {
-          range: [0, 4]
+            automargin: true,
+            title: {
+                text: "H / C"
+            }
         },
         title:'Van Krevelen diagram'
       };

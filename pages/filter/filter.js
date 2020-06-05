@@ -67,6 +67,7 @@ $("#dragable").on("drop", function(event) {
     console.log(event.originalEvent.dataTransfer.files)
     for(let i = 0; i < event.originalEvent.dataTransfer.files.length; i++) {
         workbook.xlsx.readFile(event.originalEvent.dataTransfer.files[i].path).then( (document) => {
+            console.log(document)
             generateTable(document)
         })
         break // Support for several documents not implemented
@@ -97,13 +98,15 @@ function validate(cell_value){
 }
 
 
-// TODO: This is vulnerable to injection
 function generateTable(document){
+
+    // Exctract the header titles
     let header_list = []
+    console.log("Get header")
     let header = document.worksheets[0].getRow(1).values
+    console.log(header)
     for(let i = 0; i < header.length; i++){
         const message = validate(header[i])
-        console.log(message)
         if(message === true){
             header_list.push({"title": header[i], "className": header[i]})
         }
@@ -113,6 +116,7 @@ function generateTable(document){
         }
     }
 
+    // Initialize the jquery datatable using the header titles
     let table = $('#preview-table').DataTable({
         dom: 'Bfrtip',
         buttons: [
@@ -123,38 +127,39 @@ function generateTable(document){
                 title: ''
             }
         ],
-        "columns": header_list.slice(1),
-        "paging": false,
-        select: true,
-        searchPanes:{
-            cascadePanes: true,
-            viewTotal: true,
-        },
-        dom: 'BPfrtip'
+        "columns": header_list.slice(1)
 
     })
-
+    
+    //Fill the datatable with cells
     let atoms = []
     document.worksheets[0].eachRow({ includeEmpty: true }, function(row, rowNumber){
         if(rowNumber > 1){
             real_row = []
+            
             row.eachCell({includeEmpty: true}, function(cell, colNumber){
+                // Validate the cell data
                 const message = validate(cell.value)
-                console.log(message, colNumber, rowNumber)
-                console.log(cell.value)
                 if(message === true){
-                    real_row.push(cell.value == null ? "" : (""+cell.value+""))
+                    real_row.push(cell.value == null ? "" : (String(cell.value)))
                 }
                 else{
                     $("#dragable").append("<p>Invalid input in column: " + colNumber + " row: " + rowNumber + 
                     " message: " + message + "</p>")
+                    console.log(message)
                     return false
                 }
             })
+
+            // Add empty cells to prevent warnings upon trailing empty cells
+            while(real_row.length < header.length){
+                real_row.push("")
+            }
+            // Add the row to the table
             table.row.add(
                 real_row
             )
-            // Find all atoms
+            // Find and single out all atoms
             row_atoms = real_row[4].match(/[A-Z][a-z]*/g)
             row_atoms.forEach(function(atom){
                 if(!atoms.includes(atom)){
@@ -162,11 +167,11 @@ function generateTable(document){
                 }
             })   
         }
-
     })
     table.draw()
     global.props = {table: table, atoms: atoms};
-    console.log(atoms)
+
+    // Append filter options for the individual atoms
     atoms.forEach(function(atom){
         $("#filter-options").append(
             "<div class='include-atoms'>" +
